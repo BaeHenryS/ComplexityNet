@@ -4,6 +4,21 @@ import os
 import openai
 from openai import OpenAI
 from dotenv import load_dotenv
+import textwrap
+
+import bisect
+import collections
+import math
+import heapq
+import operator
+import datetime
+import itertools
+import cmath
+import sys
+import re
+import array
+import copy
+from collections import Counter
 
 
 def getCodeFormat(code_input):
@@ -39,6 +54,8 @@ def getCodeFormat(code_input):
     responseText = responseText.replace("```python", "")
     responseText = responseText.replace("```", "")
 
+    responseText = textwrap.dedent(responseText)
+
     return responseText
 
 def generateCode(modelType, userPrompt): 
@@ -48,7 +65,7 @@ def generateCode(modelType, userPrompt):
     messages=[
         {
             "role": "system",
-            "content": "You are an expert in writing Python code. You will generate a Python Script that will complete the task outlined by the user. You will not provide any explanations, and only return the Python Script without the explanation of the code. Make sure your indents are precise. It is IMPORTANT to only include python code, and nothing else. Your response should start with ```python and end with ```"
+            "content": "You are an expert in writing Python code. You will generate a Python Script that will complete the task outlined by the user. You will not provide any explanations, and only return the Python Script without the explanation of the code. The most IMPORTANT note is to have precise indents in your output. It is IMPORTANT to only include python code, and nothing else. Your response should start with ```python and end with ```"
         },
         {
             "role": "user",
@@ -66,6 +83,9 @@ def generateCode(modelType, userPrompt):
     # Remove the ```python and ``` from the response
     responseText = responseText.replace("```python", "")
     responseText = responseText.replace("```", "")
+
+    #Fix Spacing from responseTest so it can run on exec()
+ 
 
 
 
@@ -94,10 +114,11 @@ def checkCorrectness(output, obj):
     
 if __name__ == '__main__':
     # Create a text file storing progress   
-    max_loop = 2
-    # set i to the last example that was run
-    with open("progress.txt", "r") as f:
-        i = int(f.read())
+    #max_loop = 974
+    max_loop = 100
+    # See how many rows are in mbpp_label jsonl file
+    with jsonlines.open('mbpp_label.jsonl') as reader:
+        i = sum(1 for _ in reader)
     # openai.api_key = os.getenv('OPENAI_API_KEY')
     load_dotenv()
     client = OpenAI(api_key= os.getenv('OPENAI_API_KEY'), )
@@ -107,7 +128,12 @@ if __name__ == '__main__':
     # Open JSONL File:
     with jsonlines.open('mbpp.jsonl') as reader: 
         # Loop through each example
-        for obj in reader:
+        for count, obj in enumerate(reader):
+            # Start from the last example that was run
+            with jsonlines.open('mbpp_label.jsonl') as reader:
+                i = sum(1 for _ in reader)
+            if count < i:
+                continue
             print("Running Example: " + str(i))
             prompt = obj['text']
             code = obj['code']
@@ -137,16 +163,10 @@ if __name__ == '__main__':
             with jsonlines.open('mbpp_label.jsonl', mode='a') as writer:
                 writer.write(obj)
             
+            if i == max_loop:
+                break
             
             
             time.sleep(1)
 
-            
-            # terminate loop for testing
-            i += 1
-            if i == max_loop:
-                break
-            # Write to progress file
-            with open("progress.txt", "w") as f:
-                f.write(str(i+1))
 
