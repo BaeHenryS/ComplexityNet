@@ -48,7 +48,7 @@ def generateCode(modelType, userPrompt):
     messages=[
         {
             "role": "system",
-            "content": "You are an expert in writing Python code. You will generate a Python Script that will complete the task outlined by the user. You will not provide any explanations, and only return the Python Script without the explanation of the code. Make sure your indents are precise."
+            "content": "You are an expert in writing Python code. You will generate a Python Script that will complete the task outlined by the user. You will not provide any explanations, and only return the Python Script without the explanation of the code. Make sure your indents are precise. It is IMPORTANT to only include python code, and nothing else. Your response should start with ```python and end with ```"
         },
         {
             "role": "user",
@@ -66,6 +66,7 @@ def generateCode(modelType, userPrompt):
     # Remove the ```python and ``` from the response
     responseText = responseText.replace("```python", "")
     responseText = responseText.replace("```", "")
+
 
 
     return responseText
@@ -92,8 +93,11 @@ def checkCorrectness(output, obj):
     return success
     
 if __name__ == '__main__':
-    max_loop = 974
-    i = 0
+    # Create a text file storing progress   
+    max_loop = 2
+    # set i to the last example that was run
+    with open("progress.txt", "r") as f:
+        i = int(f.read())
     # openai.api_key = os.getenv('OPENAI_API_KEY')
     load_dotenv()
     client = OpenAI(api_key= os.getenv('OPENAI_API_KEY'), )
@@ -142,3 +146,7 @@ if __name__ == '__main__':
             i += 1
             if i == max_loop:
                 break
+            # Write to progress file
+            with open("progress.txt", "w") as f:
+                f.write(str(i+1))
+
