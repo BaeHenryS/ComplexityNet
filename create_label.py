@@ -94,6 +94,7 @@ def generateCode(modelType, userPrompt):
             continue
 
         response = response_container["response"]
+        print(response)
         if response:
             print("... generating code", modelType)
             responseText = response.choices[0].message.content
