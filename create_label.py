@@ -183,7 +183,9 @@ if __name__ == '__main__':
 
             with time_limit(10):
                 try:
+                    print("Running GPT-4")
                     responseText_gpt4 = generateCode("gpt-4-1106-preview", userPrompt)
+                    print("Running GPT-3.5")
                     responseText_gpt3_5 = generateCode("gpt-3.5-turbo-1106", userPrompt)
                 except TimeoutError:
                     time.sleep(10)  # Wait for 10 seconds
@@ -222,6 +224,6 @@ if __name__ == '__main__':
                 break
             
             
-            time.sleep(1)
+            time.sleep(5)
 
 
