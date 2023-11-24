@@ -156,7 +156,26 @@ if __name__ == '__main__':
             code = obj['code']
             #print(obj['code'])
             # Call the getCodeFormat function to get the function call and its inputs
-            function_call = getCodeFormat(code)
+            #function_call = getCodeFormat(code)
+            with time_limit(10):
+                try:
+                    function_call = getCodeFormat(code)
+                except TimeoutError:
+                    time.sleep(10)
+                    try:
+                        print("Timeout Error")
+                        function_call = getCodeFormat(code)
+                    except TimeoutError:
+                        time.sleep(15)
+                        try:
+                            print("Timeout Error")
+                            function_call = getCodeFormat(code)
+                        except TimeoutError:
+                            print("Timeout Error")
+                            time.sleep(20)
+                            function_call = getCodeFormat(code)
+
+
             print("Function Call")
             print(function_call)
             userPrompt =  prompt + " The name of the function should be "  + function_call + "\n\n"
@@ -167,40 +186,27 @@ if __name__ == '__main__':
                     responseText_gpt4 = generateCode("gpt-4-1106-preview", userPrompt)
                     responseText_gpt3_5 = generateCode("gpt-3.5-turbo-1106", userPrompt)
                 except TimeoutError:
-                    time.sleep(180)  # Wait for 3 minutes
+                    time.sleep(10)  # Wait for 10 seconds
                     try:
+                        print("Timeout Error")
                         responseText_gpt4 = generateCode("gpt-4-1106-preview", userPrompt)
                         responseText_gpt3_5 = generateCode("gpt-3.5-turbo-1106", userPrompt)
                     except TimeoutError:
-                        time.sleep(300)  # Wait for 5 minutes
+                        time.sleep(30)  # Wait for 1 minutes
                         try:
+                            print("Timeout Error")
                             responseText_gpt4 = generateCode("gpt-4-1106-preview", userPrompt)
                             responseText_gpt3_5 = generateCode("gpt-3.5-turbo-1106", userPrompt)
                         except TimeoutError:
-                            time.sleep(600)  # Wait for 10 minutes
+                            print("Timeout Error")
+                            time.sleep(30)  # Wait for 4 minutes
                             responseText_gpt4 = generateCode("gpt-4-1106-preview", userPrompt)
                             responseText_gpt3_5 = generateCode("gpt-3.5-turbo-1106", userPrompt)
 
-            # Check the correctness of the code with timeout
-            with time_limit(10):
-                try:
-                    success_gpt4 = checkCorrectness(responseText_gpt4, obj)
-                    success_gpt3_5 = checkCorrectness(responseText_gpt3_5, obj)
-                except TimeoutError:
-                    time.sleep(180)  # Wait for 3 minutes
-                    try:
-                        success_gpt4 = checkCorrectness(responseText_gpt4, obj)
-                        success_gpt3_5 = checkCorrectness(responseText_gpt3_5, obj)
-                    except TimeoutError:
-                        time.sleep(300)  # Wait for 5 minutes
-                        try:
-                            success_gpt4 = checkCorrectness(responseText_gpt4, obj)
-                            success_gpt3_5 = checkCorrectness(responseText_gpt3_5, obj)
-                        except TimeoutError:
-                            time.sleep(600)  # Wait for 10 minutes
-                            success_gpt4 = checkCorrectness(responseText_gpt4, obj)
-                            success_gpt3_5 = checkCorrectness(responseText_gpt3_5, obj)
-            
+            # Check the correctness of the code 
+            success_gpt4 = checkCorrectness(responseText_gpt4, obj)
+            success_gpt3_5 = checkCorrectness(responseText_gpt3_5, obj)
+
         
 
             # Write to JSONL File
