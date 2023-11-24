@@ -5,6 +5,23 @@ import openai
 from openai import OpenAI
 from dotenv import load_dotenv
 import textwrap
+import signal
+import time
+from contextlib import contextmanager
+
+class TimeoutException(Exception): pass
+
+@contextmanager
+def time_limit(seconds):
+    def signal_handler(signum, frame):
+        raise TimeoutException("Timed out!")
+    signal.signal(signal.SIGALRM, signal_handler)
+    signal.alarm(seconds)
+    try:
+        yield
+    finally:
+        signal.alarm(0)
+
 
 import bisect
 import collections
@@ -145,12 +162,44 @@ if __name__ == '__main__':
             userPrompt =  prompt + " The name of the function should be "  + function_call + "\n\n"
             
 
-            responseText_gpt4 = generateCode("gpt-4-1106-preview", userPrompt)
-            responseText_gpt3_5 = generateCode("gpt-3.5-turbo-1106", userPrompt)
+            with time_limit(10):
+                try:
+                    responseText_gpt4 = generateCode("gpt-4-1106-preview", userPrompt)
+                    responseText_gpt3_5 = generateCode("gpt-3.5-turbo-1106", userPrompt)
+                except TimeoutError:
+                    time.sleep(180)  # Wait for 3 minutes
+                    try:
+                        responseText_gpt4 = generateCode("gpt-4-1106-preview", userPrompt)
+                        responseText_gpt3_5 = generateCode("gpt-3.5-turbo-1106", userPrompt)
+                    except TimeoutError:
+                        time.sleep(300)  # Wait for 5 minutes
+                        try:
+                            responseText_gpt4 = generateCode("gpt-4-1106-preview", userPrompt)
+                            responseText_gpt3_5 = generateCode("gpt-3.5-turbo-1106", userPrompt)
+                        except TimeoutError:
+                            time.sleep(600)  # Wait for 10 minutes
+                            responseText_gpt4 = generateCode("gpt-4-1106-preview", userPrompt)
+                            responseText_gpt3_5 = generateCode("gpt-3.5-turbo-1106", userPrompt)
 
-            # Check the correctness of the code
-            success_gpt4 = checkCorrectness(responseText_gpt4, obj)
-            success_gpt3_5 = checkCorrectness(responseText_gpt3_5, obj)
+            # Check the correctness of the code with timeout
+            with time_limit(10):
+                try:
+                    success_gpt4 = checkCorrectness(responseText_gpt4, obj)
+                    success_gpt3_5 = checkCorrectness(responseText_gpt3_5, obj)
+                except TimeoutError:
+                    time.sleep(180)  # Wait for 3 minutes
+                    try:
+                        success_gpt4 = checkCorrectness(responseText_gpt4, obj)
+                        success_gpt3_5 = checkCorrectness(responseText_gpt3_5, obj)
+                    except TimeoutError:
+                        time.sleep(300)  # Wait for 5 minutes
+                        try:
+                            success_gpt4 = checkCorrectness(responseText_gpt4, obj)
+                            success_gpt3_5 = checkCorrectness(responseText_gpt3_5, obj)
+                        except TimeoutError:
+                            time.sleep(600)  # Wait for 10 minutes
+                            success_gpt4 = checkCorrectness(responseText_gpt4, obj)
+                            success_gpt3_5 = checkCorrectness(responseText_gpt3_5, obj)
             
         
 
