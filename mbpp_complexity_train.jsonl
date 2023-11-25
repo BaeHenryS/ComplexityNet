@@ -783,3 +783,18 @@
 {"text":"Write a function to find the product of first even and odd number of a given list.","complexity":2}
 {"text":"Write a function to convert tuple string to integer tuple.","complexity":0}
 {"text":"Write a function to locate the right insertion point for a specified value in sorted order.","complexity":0}
+{"text":"Write a function that matches a string that has an a followed by three 'b'.","complexity":2}
+{"text":"Write a function to create a new tuple from the given string and list.","complexity":3}
+{"text":"Write a function to calculate the perimeter of a regular polygon.","complexity":0}
+{"text":"Write a python function to check whether every even index contains even numbers of a given list.","complexity":0}
+{"text":"Write a function to remove the nested record from the given tuple.","complexity":2}
+{"text":"Write a python function to count the number of lists in a given number of lists.","complexity":0}
+{"text":"Write a python function to find the last position of an element in a sorted array.","complexity":0}
+{"text":"Write a function that matches a string that has an 'a' followed by anything, ending in 'b'.","complexity":3}
+{"text":"Write a function to find the n - cheap price items from a given dataset using heap queue algorithm.","complexity":3}
+{"text":"Write function to find the sum of all items in the given dictionary.","complexity":0}
+{"text":"Write a python function to find the sum of all odd natural numbers within the range l and r.","complexity":1}
+{"text":"Write a python function to find the sum of an array.","complexity":0}
+{"text":"Write a python function to left rotate the bits of a given number.","complexity":0}
+{"text":"Write a function to remove all whitespaces from a string.","complexity":0}
+{"text":"Write a python function to count the number of equal numbers from three given integers.","complexity":3}
