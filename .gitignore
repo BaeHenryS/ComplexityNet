@@ -2,3 +2,5 @@
 .DS_Store
 .env
 .conda
+.ipynb_checkpoints
+.virtual_documents
