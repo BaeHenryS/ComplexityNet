@@ -1,0 +1,38 @@
+{"text":"Write a function to find the minimum cost path to reach (m, n) from (0, 0) for the given cost matrix cost[][] and a position (m, n) in cost[][].","complexity":1}
+{"text":"Write a function to find the similar elements from the given two tuple lists.","complexity":2}
+{"text":"Write a python function to identify non-prime numbers.","complexity":0}
+{"text":"Write a function to find the largest integers from a given list of numbers using heap queue algorithm.","complexity":0}
+{"text":"Write a function to find the number of ways to fill it with 2 x 1 dominoes for the given 3 x n board.","complexity":0}
+{"text":"Write a python function to check whether the two numbers differ at one bit position only or not.","complexity":2}
+{"text":"Write a function to find all words which are at least 4 characters long in a string by using regex.","complexity":0}
+{"text":"Write a function to find squares of individual elements in a list using lambda function.","complexity":0}
+{"text":"Write a python function to find the minimum number of rotations required to get the same string.","complexity":0}
+{"text":"Write a function to get the n smallest items from a dataset.","complexity":0}
+{"text":"Write a python function to remove first and last occurrence of a given character from the string.","complexity":0}
+{"text":"Write a function to sort a given matrix in ascending order according to the sum of its rows.","complexity":0}
+{"text":"Write a function to count the most common words in a dictionary.","complexity":2}
+{"text":"Write a python function to find the volume of a triangular prism.","complexity":0}
+{"text":"Write a function to split a string at lowercase letters.","complexity":2}
+{"text":"Write a function to find sequences of lowercase letters joined with an underscore.","complexity":2}
+{"text":"Write a function to find the perimeter of a square.","complexity":0}
+{"text":"Write a function to remove characters from the first string which are present in the second string.","complexity":2}
+{"text":"Write a function to find whether a given array of integers contains any duplicate element.","complexity":0}
+{"text":"Write a function to check if the given number is woodball or not.","complexity":1}
+{"text":"Write a function to find m number of multiples of n.","complexity":0}
+{"text":"Write a function to find the first duplicate element in a given array of integers.","complexity":0}
+{"text":"Write a python function to find the maximum sum of elements of list in a list of lists.","complexity":0}
+{"text":"Write a function to convert the given binary number to its decimal equivalent.","complexity":1}
+{"text":"Write a python function to find the product of non-repeated elements in a given array.","complexity":0}
+{"text":"Write a function to check if the given tuple list has all k elements.","complexity":2}
+{"text":"Write a python function to remove all digits from a list of strings.","complexity":0}
+{"text":"Write a python function to find binomial co-efficient.","complexity":0}
+{"text":"Write a python function to find the element occurring odd number of times.","complexity":0}
+{"text":"Write a python function to count all the substrings starting and ending with same characters.","complexity":1}
+{"text":"Write a function to find the top k integers that occur most frequently from given lists of sorted and distinct integers using heap queue algorithm.","complexity":2}
+{"text":"Write a python function to find the largest prime factor of a given number.","complexity":0}
+{"text":"Write a python function to convert a decimal number to binary number.","complexity":2}
+{"text":"Write a python function to find the missing number in a sorted array.","complexity":1}
+{"text":"Write a function to find the n-th rectangular number.","complexity":2}
+{"text":"Write a python function to find the nth digit in the proper fraction of two given numbers.","complexity":0}
+{"text":"Write a function to sort a given mixed list of integers and strings.","complexity":0}
+{"text":"Write a function to find the division of first even and odd number of a given list.","complexity":0}
