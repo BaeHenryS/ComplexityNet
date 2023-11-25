@@ -1,0 +1,4 @@
+Main notebook with Mistral and CodeLlaMa: https://colab.research.google.com/drive/1i_L268t3N1d81lLFggjOwTvJBPtwXqCY
+
+Aghyad's Version of the same notebook with fine-tuning trials : https://colab.research.google.com/drive/1u3UrLEYE0f4jwzhCvfYulG4mGqV8UBXD?usp=sharing
+
