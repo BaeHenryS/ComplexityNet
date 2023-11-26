@@ -1,0 +1,64 @@
+{"text":"Write a function to find ln, m lobb number.","complexity":2}
+{"text":"Write a function to check for a number at the end of a string.","complexity":0}
+{"text":"Write a python function to check whether the given string is made up of two alternating characters or not.","complexity":1}
+{"text":"Write a function to rearrange positive and negative numbers in a given array using lambda function.","complexity":2}
+{"text":"Write a function to find if there is a triplet in the array whose sum is equal to a given value.","complexity":2}
+{"text":"Write a function to find the sequences of one upper case letter followed by lower case letters.","complexity":2}
+{"text":"Write a function to count coin change.","complexity":1}
+{"text":"Write a python function to multiply all items in the list.","complexity":0}
+{"text":"Write a function to remove all tuples with all none values in the given tuple list.","complexity":2}
+{"text":"Write a function to perform chunking of tuples each of size n.","complexity":0}
+{"text":"Write a function to find a pair with the highest product from a given array of integers.","complexity":2}
+{"text":"Write a function to find the length of the shortest string that has both str1 and str2 as subsequences.","complexity":1}
+{"text":"Write a function to find maximum of two numbers.","complexity":0}
+{"text":"Write a python function to calculate the product of all the numbers of a given tuple.","complexity":0}
+{"text":"Write a function to find n-th rencontres number.","complexity":2}
+{"text":"Write a function to calculate the height of the given binary tree.","complexity":2}
+{"text":"Write a function to convert a date of yyyy-mm-dd format to dd-mm-yyyy format.","complexity":0}
+{"text":"Write a function to count repeated items of a tuple.","complexity":0}
+{"text":"Write a function that matches a string that has an a followed by zero or more b's by using regex.","complexity":2}
+{"text":"Write a function to calculate the sum of series 1\u00b3+2\u00b3+3\u00b3+\u2026.+n\u00b3.","complexity":0}
+{"text":"Write a function to remove duplicate words from a given list of strings.","complexity":1}
+{"text":"Write a function to convert camel case string to snake case string by using regex.","complexity":0}
+{"text":"Write a function to find the nth delannoy number.","complexity":2}
+{"text":"Write a function to calculate the sum of series 1\u00b2+2\u00b2+3\u00b2+\u2026.+n\u00b2.","complexity":0}
+{"text":"Write a function to re-arrange the given tuples based on the given ordered list.","complexity":0}
+{"text":"Write a function to count the most common character in a given string.","complexity":0}
+{"text":"Write a function to find three closest elements from three sorted arrays.","complexity":2}
+{"text":"Write a function to sort a list of dictionaries using lambda function.","complexity":2}
+{"text":"Write a function to sort the given array by using heap sort.","complexity":2}
+{"text":"Write a function to count the elements in a list until an element is a tuple.","complexity":0}
+{"text":"Write a function to check if any list element is present in the given list.","complexity":0}
+{"text":"Write a function to combine two given sorted lists using heapq module.","complexity":1}
+{"text":"Write a function to separate and print the numbers and their position of a given string.","complexity":2}
+{"text":"Write a function to convert the given tuples into set.","complexity":0}
+{"text":"Write a function to find the most common elements and their counts of a specified text.","complexity":1}
+{"text":"Write a python function to find the length of the shortest word.","complexity":0}
+{"text":"Write a function to get an item of a tuple.","complexity":0}
+{"text":"Write a function to sort the given tuple list basis the total digits in tuple.","complexity":2}
+{"text":"Write a function to display sign of the chinese zodiac for given year.","complexity":2}
+{"text":"Write a function to find the maximum of similar indices in two lists of tuples.","complexity":2}
+{"text":"Write a function to compute the value of ncr mod p.","complexity":2}
+{"text":"Write a python function to find the minimun number of subsets with distinct elements.","complexity":2}
+{"text":"Write a function that gives profit amount if the given amount has profit else return none.","complexity":2}
+{"text":"Write a function to find out, if the given number is abundant.","complexity":1}
+{"text":"Write a function to split the given string at uppercase letters by using regex.","complexity":2}
+{"text":"Write a python function to get the position of rightmost set bit.","complexity":2}
+{"text":"Write a function to convert an integer into a roman numeral.","complexity":1}
+{"text":"Write a python function to find the average of a list.","complexity":1}
+{"text":"Write a function to solve tiling problem.","complexity":2}
+{"text":"Write a function to convert a roman numeral to an integer.","complexity":0}
+{"text":"Write a python function to find the sum of all even natural numbers within the range l and r.","complexity":1}
+{"text":"Write a function to calculate the discriminant value.","complexity":2}
+{"text":"Write a python function to check whether the length of the word is even or not.","complexity":0}
+{"text":"Write a function to convert camel case string to snake case string.","complexity":0}
+{"text":"Write a function to remove an empty tuple from a list of tuples.","complexity":1}
+{"text":"Write a python function to accept the strings which contains all vowels.","complexity":2}
+{"text":"Write a python function to find maximum possible value for the given periodic function.","complexity":2}
+{"text":"Write a function to join the tuples if they have similar initial elements.","complexity":1}
+{"text":"Write a function to find minimum of two numbers.","complexity":0}
+{"text":"Write a function to find the maximum number of segments of lengths a, b and c that can be formed from n.","complexity":2}
+{"text":"Write a function to concatenate the given two tuples to a nested tuple.","complexity":0}
+{"text":"Write a python function to left rotate the string.","complexity":0}
+{"text":"Write a function to find the minimum total path sum in the given triangle.","complexity":1}
+{"text":null,"complexity":1}

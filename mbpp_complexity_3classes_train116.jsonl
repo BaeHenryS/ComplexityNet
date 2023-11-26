@@ -1,0 +1,116 @@
+{"text":"Write a function to find the minimum cost path to reach (m, n) from (0, 0) for the given cost matrix cost[][] and a position (m, n) in cost[][].","complexity":2}
+{"text":"Write a function to find the similar elements from the given two tuple lists.","complexity":0}
+{"text":"Write a python function to identify non-prime numbers.","complexity":0}
+{"text":"Write a function to find the largest integers from a given list of numbers using heap queue algorithm.","complexity":1}
+{"text":"Write a function to find the number of ways to fill it with 2 x 1 dominoes for the given 3 x n board.","complexity":1}
+{"text":"Write a python function to check whether the two numbers differ at one bit position only or not.","complexity":2}
+{"text":"Write a function to find all words which are at least 4 characters long in a string by using regex.","complexity":0}
+{"text":"Write a function to find squares of individual elements in a list using lambda function.","complexity":0}
+{"text":"Write a python function to find the minimum number of rotations required to get the same string.","complexity":1}
+{"text":"Write a function to get the n smallest items from a dataset.","complexity":0}
+{"text":"Write a python function to remove first and last occurrence of a given character from the string.","complexity":0}
+{"text":"Write a function to sort a given matrix in ascending order according to the sum of its rows.","complexity":1}
+{"text":"Write a function to count the most common words in a dictionary.","complexity":2}
+{"text":"Write a python function to find the volume of a triangular prism.","complexity":1}
+{"text":"Write a function to split a string at lowercase letters.","complexity":2}
+{"text":"Write a function to find sequences of lowercase letters joined with an underscore.","complexity":2}
+{"text":"Write a function to find the perimeter of a square.","complexity":0}
+{"text":"Write a function to remove characters from the first string which are present in the second string.","complexity":2}
+{"text":"Write a function to find whether a given array of integers contains any duplicate element.","complexity":0}
+{"text":"Write a function to check if the given number is woodball or not.","complexity":2}
+{"text":"Write a function to find m number of multiples of n.","complexity":1}
+{"text":"Write a function to find the first duplicate element in a given array of integers.","complexity":1}
+{"text":"Write a python function to find the maximum sum of elements of list in a list of lists.","complexity":1}
+{"text":"Write a function to convert the given binary number to its decimal equivalent.","complexity":1}
+{"text":"Write a python function to find the product of non-repeated elements in a given array.","complexity":0}
+{"text":"Write a function to check if the given tuple list has all k elements.","complexity":2}
+{"text":"Write a python function to remove all digits from a list of strings.","complexity":0}
+{"text":"Write a python function to find binomial co-efficient.","complexity":0}
+{"text":"Write a python function to find the element occurring odd number of times.","complexity":0}
+{"text":"Write a python function to count all the substrings starting and ending with same characters.","complexity":2}
+{"text":"Write a function to find the top k integers that occur most frequently from given lists of sorted and distinct integers using heap queue algorithm.","complexity":2}
+{"text":"Write a python function to find the largest prime factor of a given number.","complexity":0}
+{"text":"Write a python function to convert a decimal number to binary number.","complexity":2}
+{"text":"Write a python function to find the missing number in a sorted array.","complexity":1}
+{"text":"Write a function to find the n-th rectangular number.","complexity":2}
+{"text":"Write a python function to find the nth digit in the proper fraction of two given numbers.","complexity":2}
+{"text":"Write a function to sort a given mixed list of integers and strings.","complexity":1}
+{"text":"Write a function to find the division of first even and odd number of a given list.","complexity":1}
+{"text":"Write a function to check if the letters of a given string can be rearranged so that two characters that are adjacent to each other are different.","complexity":2}
+{"text":"Write a function to find frequency of the elements in a given list of lists using collections module.","complexity":1}
+{"text":"Write a function to filter even numbers using lambda function.","complexity":0}
+{"text":"Write a python function to find the sum of repeated elements in a given array.","complexity":2}
+{"text":"Write a function to find sequences of lowercase letters joined with an underscore using regex.","complexity":2}
+{"text":"Write a function that matches a word at the beginning of a string.","complexity":2}
+{"text":"Write a function to find the gcd of the given array elements.","complexity":2}
+{"text":"Write a python function to determine whether all the numbers are different from each other are not.","complexity":0}
+{"text":"Write a python function to find the last digit when factorial of a divides factorial of b.","complexity":2}
+{"text":"Write a python function to set all odd bits of a given number.","complexity":2}
+{"text":"Write a function to extract every first or specified element from a given two-dimensional list.","complexity":1}
+{"text":"Write a function to find the list with minimum length using lambda function.","complexity":2}
+{"text":"Write a function to print check if the triangle is equilateral or not.","complexity":2}
+{"text":"Write a function to caluclate area of a parallelogram.","complexity":0}
+{"text":"Write a python function to check whether the first and last characters of a given string are equal or not.","complexity":2}
+{"text":"Write a function to sort the given array by using counting sort.","complexity":1}
+{"text":"Write a function to find t-nth term of geometric series.","complexity":0}
+{"text":"Write a python function to check if a given number is one less than twice its reverse.","complexity":2}
+{"text":"Write a python function to find the largest number that can be formed with the given digits.","complexity":2}
+{"text":"Write a python function to check whether the given two integers have opposite sign or not.","complexity":0}
+{"text":"Write a function to find the nth octagonal number.","complexity":1}
+{"text":"Write a function to find the maximum length of the subsequence with difference between adjacent elements for the given array.","complexity":2}
+{"text":"Write a python function to count number of substrings with the sum of digits equal to their length.","complexity":1}
+{"text":"Write a python function to find smallest number in a list.","complexity":0}
+{"text":"Write a function to find the maximum difference between available pairs in the given tuple list.","complexity":2}
+{"text":"Write a function to sort a list of tuples using lambda.","complexity":2}
+{"text":"Write a function of recursion list sum.","complexity":2}
+{"text":"Write a python function to count positive numbers in a list.","complexity":0}
+{"text":"Write a function to find the number of ways to partition a set of bell numbers.","complexity":1}
+{"text":"Write a python function to check whether the given array is monotonic or not.","complexity":0}
+{"text":"Write a function to check whether a list contains the given sublist or not.","complexity":1}
+{"text":"Write a function to find whether all the given tuples have equal length or not.","complexity":2}
+{"text":"Write a function to sort a list of elements using comb sort.","complexity":0}
+{"text":"Write a python function to check whether the given number can be represented as difference of two squares or not.","complexity":0}
+{"text":"Write a function to split the given string with multiple delimiters by using regex.","complexity":2}
+{"text":"Write a function to check whether it follows the sequence given in the patterns array.","complexity":1}
+{"text":"Write a function to find tuples which have all elements divisible by k from the given list of tuples.","complexity":2}
+{"text":"Write a python function to count the number of squares in a rectangle.","complexity":2}
+{"text":"Write a python function to find the difference between sum of even and odd digits.","complexity":2}
+{"text":"Write a python function to find number of integers with odd number of set bits.","complexity":0}
+{"text":"Write a python function to check whether the length of the word is odd or not.","complexity":1}
+{"text":"Write a function to find the nth tetrahedral number.","complexity":0}
+{"text":"Write a function to zip the two given tuples.","complexity":2}
+{"text":"Write a function to find the volume of a sphere.","complexity":0}
+{"text":"Write a python function to find the character made by adding all the characters of the given string.","complexity":2}
+{"text":"Write a function to find the n-th number in newman conway sequence.","complexity":1}
+{"text":"Write a function to find the surface area of a sphere.","complexity":1}
+{"text":"Write a function to find nth centered hexagonal number.","complexity":1}
+{"text":"Write a function to merge three dictionaries into a single expression.","complexity":2}
+{"text":"Write a function to get the frequency of the elements in a list.","complexity":0}
+{"text":"Write a function to find the closest smaller number than n.","complexity":1}
+{"text":"Write a python function to find the length of the longest word.","complexity":0}
+{"text":"Write a function to check if a substring is present in a given list of string values.","complexity":2}
+{"text":"Write a function to check whether the given number is undulating or not.","complexity":1}
+{"text":"Write a function to calculate the value of 'a' to the power 'b'.","complexity":0}
+{"text":"Write a function to extract the index minimum value record from the given tuples.","complexity":2}
+{"text":"Write a python function to find the minimum length of sublist.","complexity":1}
+{"text":"Write a python function to find the number of divisors of a given integer.","complexity":0}
+{"text":"Write a function to find frequency count of list of lists.","complexity":1}
+{"text":"Write a function to multiply all the numbers in a list and divide with the length of the list.","complexity":1}
+{"text":"Write a function to convert the given decimal number to its binary equivalent.","complexity":1}
+{"text":"Write a function to find the next smallest palindrome of a specified number.","complexity":2}
+{"text":"Write a function to find the kth element in the given array.","complexity":0}
+{"text":"Write a function to convert snake case string to camel case string.","complexity":0}
+{"text":"Write a function to find eulerian number a(n, m).","complexity":2}
+{"text":"Write a function to sort each sublist of strings in a given list of lists using lambda function.","complexity":2}
+{"text":"Write a python function to count true booleans in the given list.","complexity":0}
+{"text":"Write a function to add the given list to the given tuples.","complexity":2}
+{"text":"Write a python function to count hexadecimal numbers for a given range.","complexity":2}
+{"text":"Write a function to merge multiple sorted inputs into a single sorted iterator using heap queue algorithm.","complexity":2}
+{"text":"Write a python function to find the count of rotations of a binary string with odd value.","complexity":0}
+{"text":"Write a function to extract the ranges that are missing from the given list with the given start range and end range values.","complexity":2}
+{"text":"Write a function to find common elements in given nested lists. * list item * list item * list item * list item","complexity":1}
+{"text":"Write a python function to find the perimeter of a cylinder.","complexity":0}
+{"text":"Write a function to check if a string represents an integer or not.","complexity":0}
+{"text":"Write a function to assign frequency to each tuple in the given tuple list.","complexity":2}
+{"text":"Write a function to check whether all dictionaries in a list are empty or not.","complexity":0}
+{"text":"Write a function to convert a given tuple of positive integers into an integer.","complexity":0}
