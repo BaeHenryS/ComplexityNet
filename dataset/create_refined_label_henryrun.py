@@ -139,7 +139,7 @@ if __name__ == '__main__':
     #max_loop = 974
     max_loop = 100
     # See how many rows are in mbpp_label_refined jsonl file
-    with jsonlines.open('mbpp_label_refined.jsonl') as reader:
+    with jsonlines.open('mbpp_label_refined_250.jsonl') as reader:
         i = sum(1 for _ in reader)
     # openai.api_key = os.getenv('OPENAI_API_KEY')
     load_dotenv()
@@ -152,7 +152,7 @@ if __name__ == '__main__':
         # Loop through each example
         for count, obj in enumerate(reader):
             # Start from the last example that was run
-            with jsonlines.open('mbpp_label_refined.jsonl') as reader:
+            with jsonlines.open('mbpp_label_refined_250.jsonl') as reader:
                 i = sum(1 for _ in reader)
             if count < i:
                 continue
@@ -222,7 +222,7 @@ if __name__ == '__main__':
                 if checkCorrectness(responseText_gpt3_5, obj):
                     success_gpt3_5 += 1
 
-                time.sleep(5)
+                time.sleep(10)
 
             
 
@@ -236,7 +236,7 @@ if __name__ == '__main__':
             obj["method2_gpt4_success"] = success_gpt4
             obj["method2_gpt3_5_success"] = success_gpt3_5
 
-            with jsonlines.open('mbpp_label_refined.jsonl', mode='a') as writer:
+            with jsonlines.open('mbpp_label_refined_250.jsonl', mode='a') as writer:
                 writer.write(obj)
             
             if i == max_loop:
