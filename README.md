@@ -22,4 +22,5 @@ constrained environments.
 ## Repository Structure
 The dataset folder includes the Jupyter Notebooks that create the dataset for all of `Code Llama`, `GPT-3.5`, and `GPT-4`. Different versions of the dataset we generated can be found there too.
 
-The fine-tuning folders contain the Jupyter Notebooks used to fine-tune the complexity model. There's one version for fine-tuning completion models, like `Davinice-002` and another for fine-tuning chat-based models like `GPT-3.5`
+The `fine-tuning` folder contains the Jupyter Notebooks used to fine-tune the complexity model. The `dataset_prep_completion.ipynb` notebook creates a dataset compatible with the OpenAI API fine-tuning format for completion models from the previous format. The `dataset_prep_chat.ipynb` notebook does the same thing for chat models. The `fine_tuning_completion.ipynb` notebook uses the dataset created by the previous files to fine-tune a completion model using the OpenAI API. The `fine_tuning_chat.ipynb` notebook does the same thing for a chat model.
+There's one version for fine-tuning completion models, like `Davinice-002` and another for fine-tuning chat-based models like `GPT-3.5`
