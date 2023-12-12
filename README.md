@@ -17,7 +17,7 @@ of Large Language Models. Our findings suggest a promising
 direction for optimizing LLM applications, especially in resource-
 constrained environments.
 
-![A chart explaining the setup](./Methodology.png)
+![A chart explaining the setup](./ProblemStatement.png)
 
 ## Repository Structure
 The dataset folder includes the Jupyter Notebooks that create the dataset for all of `Code Llama`, `GPT-3.5`, and `GPT-4`. Different versions of the dataset we generated can be found there too.
