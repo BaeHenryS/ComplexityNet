@@ -1,229 +1,273 @@
-import time 
-import jsonlines
-import os
-import openai
-from openai import OpenAI
-from dotenv import load_dotenv
-import textwrap
-import signal
-import time
-from contextlib import contextmanager
+import numpy as np
+import random
+import torch
+import torch.nn as nn
 
-class TimeoutException(Exception): pass
-
-@contextmanager
-def time_limit(seconds):
-    def signal_handler(signum, frame):
-        raise TimeoutException("Timed out!")
-    signal.signal(signal.SIGALRM, signal_handler)
-    signal.alarm(seconds)
-    try:
-        yield
-    finally:
-        signal.alarm(0)
+from models.common import Conv, DWConv
+from utils.google_utils import attempt_download
 
 
-import bisect
-import collections
-import math
-import heapq
-import operator
-import datetime
-import itertools
-import cmath
-import sys
-import re
-import array
-import copy
-from collections import Counter
+class CrossConv(nn.Module):
+    # Cross Convolution Downsample
+    def __init__(self, c1, c2, k=3, s=1, g=1, e=1.0, shortcut=False):
+        # ch_in, ch_out, kernel, stride, groups, expansion, shortcut
+        super(CrossConv, self).__init__()
+        c_ = int(c2 * e)  # hidden channels
+        self.cv1 = Conv(c1, c_, (1, k), (1, s))
+        self.cv2 = Conv(c_, c2, (k, 1), (s, 1), g=g)
+        self.add = shortcut and c1 == c2
+
+    def forward(self, x):
+        return x + self.cv2(self.cv1(x)) if self.add else self.cv2(self.cv1(x))
 
 
-def getCodeFormat(code_input):
-    # Make an OPENAI API Call to only return the function call and its inputs
-    '''EXAMPLE:
-    INPUT: class Pair(object): def __init__(self, a, b): self.a = a self.b = b def max_chain_length(arr, n): max = 0 mcl = [1 for i in range(n)] for i in range(1, n): for j in range(0, i): if (arr[i].a > arr[j].b and mcl[i] < mcl[j] + 1): mcl[i] = mcl[j] + 1 for i in range(n): if (max < mcl[i]): max = mcl[i] return max
-    
-    OUTPUT: Class Pair(object) def max_chain_length(arr, n)
-    '''
+class Sum(nn.Module):
+    # Weighted sum of 2 or more layers https://arxiv.org/abs/1911.09070
+    def __init__(self, n, weight=False):  # n: number of inputs
+        super(Sum, self).__init__()
+        self.weight = weight  # apply weights boolean
+        self.iter = range(n - 1)  # iter object
+        if weight:
+            self.w = nn.Parameter(-torch.arange(1., n) / 2, requires_grad=True)  # layer weights
 
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo-1106",
-        messages=[
-            {
-                "role": "system",
-                "content": "Return only the function definition and its inputs from the code given by the user. Example: INPUT: class Pair(object): def __init__(self, a, b): self.a = a self.b = b def max_chain_length(arr, n): max = 0 mcl = [1 for i in range(n)] for i in range(1, n): for j in range(0, i): if (arr[i].a > arr[j].b and mcl[i] < mcl[j] + 1): mcl[i] = mcl[j] + 1 for i in range(n): if (max < mcl[i]): max = mcl[i] return max OUTPUT: Class Pair(object) def max_chain_length(arr, n) "
-            },
-            {
-                "role": "user",
-                "content": code_input
-            }
-        ],
-        temperature=1,
-        max_tokens=1024,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0
-    )
-    
-    responseText = response.choices[0].message.content
+    def forward(self, x):
+        y = x[0]  # no weight
+        if self.weight:
+            w = torch.sigmoid(self.w) * 2
+            for i in self.iter:
+                y = y + x[i + 1] * w[i]
+        else:
+            for i in self.iter:
+                y = y + x[i + 1]
+        return y
 
-    # Remove the ```python and ``` from the response
-    responseText = responseText.replace("```python", "")
-    responseText = responseText.replace("```", "")
 
-    responseText = textwrap.dedent(responseText)
+class MixConv2d(nn.Module):
+    # Mixed Depthwise Conv https://arxiv.org/abs/1907.09595
+    def __init__(self, c1, c2, k=(1, 3), s=1, equal_ch=True):
+        super(MixConv2d, self).__init__()
+        groups = len(k)
+        if equal_ch:  # equal c_ per group
+            i = torch.linspace(0, groups - 1E-6, c2).floor()  # c2 indices
+            c_ = [(i == g).sum() for g in range(groups)]  # intermediate channels
+        else:  # equal weight.numel() per group
+            b = [c2] + [0] * groups
+            a = np.eye(groups + 1, groups, k=-1)
+            a -= np.roll(a, 1, axis=1)
+            a *= np.array(k) ** 2
+            a[0] = 1
+            c_ = np.linalg.lstsq(a, b, rcond=None)[0].round()  # solve for equal weight indices, ax = b
 
-    return responseText
+        self.m = nn.ModuleList([nn.Conv2d(c1, int(c_[g]), k[g], s, k[g] // 2, bias=False) for g in range(groups)])
+        self.bn = nn.BatchNorm2d(c2)
+        self.act = nn.LeakyReLU(0.1, inplace=True)
 
-def generateCode(modelType, userPrompt): 
-    # Models: "gpt-4-1106-preview", "gpt-3.5-turbo-1106"
-    response = client.chat.completions.create(
-    model=modelType,
-    messages=[
-        {
-            "role": "system",
-            "content": "You are an expert in writing Python code. You will generate a Python Script that will complete the task outlined by the user. You will not provide any explanations, and only return the Python Script without the explanation of the code. The most IMPORTANT note is to have precise indents in your output. It is IMPORTANT to only include python code, and nothing else. Your response should start with ```python and end with ```"
-        },
-        {
-            "role": "user",
-            "content": userPrompt
-        }
-    ],
-    temperature=1,
-    max_tokens=2047,
-    top_p=1,
-    frequency_penalty=0,
-    presence_penalty=0
-    )
-    responseText = response.choices[0].message.content
+    def forward(self, x):
+        return x + self.act(self.bn(torch.cat([m(x) for m in self.m], 1)))
 
-    # Remove the ```python and ``` from the response
-    responseText = responseText.replace("```python", "")
-    responseText = responseText.replace("```", "")
 
-    #Fix Spacing from responseTest so it can run on exec()
- 
+class Ensemble(nn.ModuleList):
+    # Ensemble of models
+    def __init__(self):
+        super(Ensemble, self).__init__()
+
+    def forward(self, x, augment=False):
+        y = []
+        for module in self:
+            y.append(module(x, augment)[0])
+        # y = torch.stack(y).max(0)[0]  # max ensemble
+        # y = torch.stack(y).mean(0)  # mean ensemble
+        y = torch.cat(y, 1)  # nms ensemble
+        return y, None  # inference, train output
 
 
 
-    return responseText
+
+
+class ORT_NMS(torch.autograd.Function):
+    '''ONNX-Runtime NMS operation'''
+    @staticmethod
+    def forward(ctx,
+                boxes,
+                scores,
+                max_output_boxes_per_class=torch.tensor([100]),
+                iou_threshold=torch.tensor([0.45]),
+                score_threshold=torch.tensor([0.25])):
+        device = boxes.device
+        batch = scores.shape[0]
+        num_det = random.randint(0, 100)
+        batches = torch.randint(0, batch, (num_det,)).sort()[0].to(device)
+        idxs = torch.arange(100, 100 + num_det).to(device)
+        zeros = torch.zeros((num_det,), dtype=torch.int64).to(device)
+        selected_indices = torch.cat([batches[None], zeros[None], idxs[None]], 0).T.contiguous()
+        selected_indices = selected_indices.to(torch.int64)
+        return selected_indices
+
+    @staticmethod
+    def symbolic(g, boxes, scores, max_output_boxes_per_class, iou_threshold, score_threshold):
+        return g.op("NonMaxSuppression", boxes, scores, max_output_boxes_per_class, iou_threshold, score_threshold)
+
+
+class TRT_NMS(torch.autograd.Function):
+    '''TensorRT NMS operation'''
+    @staticmethod
+    def forward(
+        ctx,
+        boxes,
+        scores,
+        background_class=-1,
+        box_coding=1,
+        iou_threshold=0.45,
+        max_output_boxes=100,
+        plugin_version="1",
+        score_activation=0,
+        score_threshold=0.25,
+    ):
+        batch_size, num_boxes, num_classes = scores.shape
+        num_det = torch.randint(0, max_output_boxes, (batch_size, 1), dtype=torch.int32)
+        det_boxes = torch.randn(batch_size, max_output_boxes, 4)
+        det_scores = torch.randn(batch_size, max_output_boxes)
+        det_classes = torch.randint(0, num_classes, (batch_size, max_output_boxes), dtype=torch.int32)
+        return num_det, det_boxes, det_scores, det_classes
+
+    @staticmethod
+    def symbolic(g,
+                 boxes,
+                 scores,
+                 background_class=-1,
+                 box_coding=1,
+                 iou_threshold=0.45,
+                 max_output_boxes=100,
+                 plugin_version="1",
+                 score_activation=0,
+                 score_threshold=0.25):
+        out = g.op("TRT::EfficientNMS_TRT",
+                   boxes,
+                   scores,
+                   background_class_i=background_class,
+                   box_coding_i=box_coding,
+                   iou_threshold_f=iou_threshold,
+                   max_output_boxes_i=max_output_boxes,
+                   plugin_version_s=plugin_version,
+                   score_activation_i=score_activation,
+                   score_threshold_f=score_threshold,
+                   outputs=4)
+        nums, boxes, scores, classes = out
+        return nums, boxes, scores, classes
+
+
+class ONNX_ORT(nn.Module):
+    '''onnx module with ONNX-Runtime NMS operation.'''
+    def __init__(self, max_obj=100, iou_thres=0.45, score_thres=0.25, max_wh=640, device=None, n_classes=80):
+        super().__init__()
+        self.device = device if device else torch.device("cpu")
+        self.max_obj = torch.tensor([max_obj]).to(device)
+        self.iou_threshold = torch.tensor([iou_thres]).to(device)
+        self.score_threshold = torch.tensor([score_thres]).to(device)
+        self.max_wh = max_wh # if max_wh != 0 : non-agnostic else : agnostic
+        self.convert_matrix = torch.tensor([[1, 0, 1, 0], [0, 1, 0, 1], [-0.5, 0, 0.5, 0], [0, -0.5, 0, 0.5]],
+                                           dtype=torch.float32,
+                                           device=self.device)
+        self.n_classes=n_classes
+
+    def forward(self, x):
+        boxes = x[:, :, :4]
+        conf = x[:, :, 4:5]
+        scores = x[:, :, 5:]
+        if self.n_classes == 1:
+            scores = conf # for models with one class, cls_loss is 0 and cls_conf is always 0.5,
+                                 # so there is no need to multiplicate.
+        else:
+            scores *= conf  # conf = obj_conf * cls_conf
+        boxes @= self.convert_matrix
+        max_score, category_id = scores.max(2, keepdim=True)
+        dis = category_id.float() * self.max_wh
+        nmsbox = boxes + dis
+        max_score_tp = max_score.transpose(1, 2).contiguous()
+        selected_indices = ORT_NMS.apply(nmsbox, max_score_tp, self.max_obj, self.iou_threshold, self.score_threshold)
+        X, Y = selected_indices[:, 0], selected_indices[:, 2]
+        selected_boxes = boxes[X, Y, :]
+        selected_categories = category_id[X, Y, :].float()
+        selected_scores = max_score[X, Y, :]
+        X = X.unsqueeze(1).float()
+        return torch.cat([X, selected_boxes, selected_categories, selected_scores], 1)
+
+class ONNX_TRT(nn.Module):
+    '''onnx module with TensorRT NMS operation.'''
+    def __init__(self, max_obj=100, iou_thres=0.45, score_thres=0.25, max_wh=None ,device=None, n_classes=80):
+        super().__init__()
+        assert max_wh is None
+        self.device = device if device else torch.device('cpu')
+        self.background_class = -1,
+        self.box_coding = 1,
+        self.iou_threshold = iou_thres
+        self.max_obj = max_obj
+        self.plugin_version = '1'
+        self.score_activation = 0
+        self.score_threshold = score_thres
+        self.n_classes=n_classes
+
+    def forward(self, x):
+        boxes = x[:, :, :4]
+        conf = x[:, :, 4:5]
+        scores = x[:, :, 5:]
+        if self.n_classes == 1:
+            scores = conf # for models with one class, cls_loss is 0 and cls_conf is always 0.5,
+                                 # so there is no need to multiplicate.
+        else:
+            scores *= conf  # conf = obj_conf * cls_conf
+        num_det, det_boxes, det_scores, det_classes = TRT_NMS.apply(boxes, scores, self.background_class, self.box_coding,
+                                                                    self.iou_threshold, self.max_obj,
+                                                                    self.plugin_version, self.score_activation,
+                                                                    self.score_threshold)
+        return num_det, det_boxes, det_scores, det_classes
+
+
+class End2End(nn.Module):
+    '''export onnx or tensorrt model with NMS operation.'''
+    def __init__(self, model, max_obj=100, iou_thres=0.45, score_thres=0.25, max_wh=None, device=None, n_classes=80):
+        super().__init__()
+        device = device if device else torch.device('cpu')
+        assert isinstance(max_wh,(int)) or max_wh is None
+        self.model = model.to(device)
+        self.model.model[-1].end2end = True
+        self.patch_model = ONNX_TRT if max_wh is None else ONNX_ORT
+        self.end2end = self.patch_model(max_obj, iou_thres, score_thres, max_wh, device, n_classes)
+        self.end2end.eval()
+
+    def forward(self, x):
+        x = self.model(x)
+        x = self.end2end(x)
+        return x
 
 
 
-def checkCorrectness(output, obj):
-        # Execute the code:
-    exec(output)
-    
-    assertion_code = obj['test_list']
-
-    success = True
-    for assertion in assertion_code:
-        try:
-            exec(assertion)
-            print("Code Passed Assertions")
-        except Exception as e:
-            # Continue to the next example and print the error
-            print(f"Error: {e}")
-            print("Code Failed Assertions")
-            success = False
-
-    return success
-    
-if __name__ == '__main__':
-    # Create a text file storing progress   
-    #max_loop = 974
-    max_loop = 100
-    # See how many rows are in mbpp_label jsonl file
-    with jsonlines.open('mbpp_label.jsonl') as reader:
-        i = sum(1 for _ in reader)
-    # openai.api_key = os.getenv('OPENAI_API_KEY')
-    load_dotenv()
-    client = OpenAI(api_key= os.getenv('OPENAI_API_KEY'), )
-    # client = OpenAI(api_key=openai.api_key)
-
-    # GPT4 Model
-    # Open JSONL File:
-    with jsonlines.open('mbpp.jsonl') as reader: 
-        # Loop through each example
-        for count, obj in enumerate(reader):
-            # Start from the last example that was run
-            with jsonlines.open('mbpp_label.jsonl') as reader:
-                i = sum(1 for _ in reader)
-            if count < i:
-                continue
-            print("Running Example: " + str(i))
-            prompt = obj['text']
-            code = obj['code']
-            #print(obj['code'])
-            # Call the getCodeFormat function to get the function call and its inputs
-            #function_call = getCodeFormat(code)
-            with time_limit(10):
-                try:
-                    function_call = getCodeFormat(code)
-                except TimeoutError:
-                    time.sleep(10)
-                    try:
-                        print("Timeout Error")
-                        function_call = getCodeFormat(code)
-                    except TimeoutError:
-                        time.sleep(15)
-                        try:
-                            print("Timeout Error")
-                            function_call = getCodeFormat(code)
-                        except TimeoutError:
-                            print("Timeout Error")
-                            time.sleep(20)
-                            function_call = getCodeFormat(code)
 
 
-            print("Function Call")
-            print(function_call)
-            userPrompt =  prompt + " The name of the function should be "  + function_call + "\n\n"
-            
-
-            with time_limit(10):
-                try:
-                    print("Running GPT-4")
-                    responseText_gpt4 = generateCode("gpt-4-1106-preview", userPrompt)
-                    print("Running GPT-3.5")
-                    responseText_gpt3_5 = generateCode("gpt-3.5-turbo-1106", userPrompt)
-                except TimeoutError:
-                    time.sleep(10)  # Wait for 10 seconds
-                    try:
-                        print("Timeout Error")
-                        responseText_gpt4 = generateCode("gpt-4-1106-preview", userPrompt)
-                        responseText_gpt3_5 = generateCode("gpt-3.5-turbo-1106", userPrompt)
-                    except TimeoutError:
-                        time.sleep(30)  # Wait for 1 minutes
-                        try:
-                            print("Timeout Error")
-                            responseText_gpt4 = generateCode("gpt-4-1106-preview", userPrompt)
-                            responseText_gpt3_5 = generateCode("gpt-3.5-turbo-1106", userPrompt)
-                        except TimeoutError:
-                            print("Timeout Error")
-                            time.sleep(30)  # Wait for 4 minutes
-                            responseText_gpt4 = generateCode("gpt-4-1106-preview", userPrompt)
-                            responseText_gpt3_5 = generateCode("gpt-3.5-turbo-1106", userPrompt)
-
-            # Check the correctness of the code 
-            success_gpt4 = checkCorrectness(responseText_gpt4, obj)
-            success_gpt3_5 = checkCorrectness(responseText_gpt3_5, obj)
+def attempt_load(weights, map_location=None):
+    # Loads an ensemble of models weights=[a,b,c] or a single model weights=[a] or weights=a
+    model = Ensemble()
+    for w in weights if isinstance(weights, list) else [weights]:
+        attempt_download(w)
+        ckpt = torch.load(w, map_location=map_location)  # load
+        model.append(ckpt['ema' if ckpt.get('ema') else 'model'].float().fuse().eval())  # FP32 model
 
         
-
-            # Write to JSONL File
-            obj["method2_gpt4_output"] = responseText_gpt4
-            obj["method2_gpt3_5_output"] = responseText_gpt3_5
-            obj["method2_gpt4_success"] = success_gpt4
-            obj["method2_gpt3_5_success"] = success_gpt3_5
-
-            with jsonlines.open('mbpp_label.jsonl', mode='a') as writer:
-                writer.write(obj)
-            
-            if i == max_loop:
-                break
-            
-            
-            time.sleep(5)
-
+    
+    # Compatibility updates
+    for m in model.modules():
+        if type(m) in [nn.Hardswish, nn.LeakyReLU, nn.ReLU, nn.ReLU6, nn.SiLU]:
+            m.inplace = True  # pytorch 1.7.0 compatibility
+        elif type(m) is nn.Upsample:
+            m.recompute_scale_factor = None  # torch 1.11.0 compatibility
+        elif type(m) is Conv:
+            m._non_persistent_buffers_set = set()  # pytorch 1.6.0 compatibility
+    
+    if len(model) == 1:
+        return model[-1]  # return model
+    else:
+        print('Ensemble created with %s\n' % weights)
+        for k in ['names', 'stride']:
+            setattr(model, k, getattr(model[-1], k))
+        return model  # return ensemble
 
